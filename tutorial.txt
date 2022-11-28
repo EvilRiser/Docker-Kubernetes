@@ -1,0 +1,152 @@
+
+
+    Learning Kubernetes and docker:
+==============================================
+
+
+ -> docker is a tool for running applications in an isolated environment
+ -> similar to VM but it is much faster and does not require a lot of memory or an OS to run
+ -> App run in same environmet
+ -> Standard for software deployment
+
+    Containers vs VM
+_____________________________________________
+
+ CONTAINERS:
+ -> Containers are an abstraction at the app layer that packages *code* and *dependencies* together.
+ -> Multiple containers can run on the same machine and *share the OS kernel* with other containers, 
+    each running as isolated processes in user space.
+ 
+ Infrastructure --> Host OS --> Docker --> App A
+                                       --> App B
+                                       --> App C
+
+ VIRTUAL MACHINES:
+ -> Virtual machines(VM) are an abstraction of physical hardware turning one server into many servers.
+ -> The hypervisor allows multiple VMs to run on a single machine.
+ -> Each VM includes a full copy of an operating system, the application, necessary binaries and 
+    libraries- taking up tens of GBs. 
+ -> VMs can also be slow to boot.
+
+ Infrastructure --> Hypervisor --> VM1 --> Guest OS1 --> appA
+                               --> VM2 --> Guest OS2 --> appB
+                               --> VM3 --> Guest OS3 --> appC
+
+ Benefits :
+ -> Run container in seconds instead of minutes
+ -> Less resources results less disk space
+ -> Uses less memory
+ -> does not need full OS
+ -> Deployment
+ -> Testing
+
+ Installing Docker:
+ ==> docs.docker.com/install
+    Install Docker Desktop
+
+Always run docker daemon(app) before running commands
+
+=====+++++
+ Docker Image:
+ -> Image is a template for creating an environment of your choice
+ -> Snapshot
+ -> Has everything need to run your Apps
+ -> OS, Software, App Code
+
+ Container:
+ -> Running instance of image
+
+    image --> Run --> Container
+
+ $ docker ps --> list all running containers where ps is process status
+
+ $ docker pull nginx --> pulling image from docker hub 
+   Status: Downloaded newer image for nginx:latest    --> here is the msg that is getting displayed where ":latest" is the tag
+
+ $ docker images --> list all images
+   REPOSITORY   TAG       IMAGE ID       CREATED        SIZE 
+
+## Running a container from an image:
+ $ docker run nginx:latest --> it will run the instance of this image
+ $ docker run -d nginx:latest --> -d means run in dettach mode
+
+ $ docker container ls --> list all container
+
+ $ docker stop <container_id>  --> to stop the container
+
+ EXPOSING Ports :
+---------------------------
+now for above case the nginx is exposing a port and the port is 80
+mapping localhost 8080 to 80 of nginx
+
+ -p 8080:80
+
+ $ docker run -d -p 8080:80 nginx:latest
+
+ealrlier ports --> 80/tcp
+now after adding -p ports become --> 0.0.0.0:8080->80/tcp
+
+if you go to localhost:8080 in your browser you will nginx welcome page
+
+ Exposing multiple ports:
+---------------------------
+ docker run -d -p 8080:80 -p 3000:80 nginx:latest
+
+ MANAGING Containers:
+---------------------------
+ $ docker stop <container_id>/<container_name> --> to stop the container (it does not remove the container)
+ $ docker start <container_id>/<container_name> --> restart the container
+
+ $ docker ps --> running containers
+ $ docker ps --help
+ $ docker ps -a --> list all running as well as stoped containers
+ $ docker rm <container_id>/<container_name> --> to delete the container
+ $ docker ps -a -q --> here -q shows only container id
+ $ docker rm $(docker ps -aq) --> deleting all containers(only if all containers are stopped) use -f to force to remove the container
+
+
+ NAMING CONTAINER:
+----------------------------
+ --name
+ $ docker run --name website -d -p 3000:80 -p 8080:80 nginx:latest --> it will give name as website to container
+ 
+ $ docker run --name website-two -d -p 9000:80 nginx:latest
+
+ $ export FORMAT="ID\t{{.ID}}\n"  ---> your format
+ $ docker ps --format=$FORMAT
+ 
+
+ Docker Volumes
+---------------------------
+ -> Allows sharing of data.files and folders
+ -> Between host and container
+ -> Between containers.
+
+ $ docker run --name website -v $(pwd):/usr/share/nginx/html:ro -p 8080:80 -d nginx  --> mount your host file path to container path which 
+                    we got from documentation :ro means read only
+    Now whatever is in your folder will be reflected in docker container and works same as debug mode your changes will be reflected live
+
+ $ docker exec -it website bash  --> execute docker comaand in interactive mode(-it) on the container name specified  and we want to execute the bash command
+ $ docker exec -it <container_name> <method> 
+        If you try to create new file on that location it won't allow as it is read only
+ to close --> use ctrl+D or $ exit
+ 
+ $ docker run --name website -v $(pwd):/usr/share/nginx/html -p 8080:80 -d nginx --> now it will be for both read and write
+ $ docker exec -it website bash
+   $$ cd /usr/share/nginx/html
+   $$ ls -al
+   $$ touch about.html  --> this will be created in your host machine also
+
+Search bootstrap landing page theme and use any template and copy from github code
+
+   SHARING between CONTAINERS::
+ $ docker run --help
+ $ docker run --name website-copy --volumes-from website -d -p 8081:80 nginx  --> here --volumes-from will copy files/folders from website container
+
+ Dockerfile :
+---------------------------
+ -> Build own images
+ -> It consist of steps on how to create images
+ -> When containing your own image you don't need to mount the volume instead you have to copy everything into your image
+
+ 

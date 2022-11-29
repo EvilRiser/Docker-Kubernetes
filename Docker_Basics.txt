@@ -255,6 +255,80 @@ Alpine is small size, secure
  RUNNING CONTAINERS and TAGS:
 -----------------------------------
  $ docker build -t website:latest .
- 
- $ docker build -t user-service-api .
+ $ docker run --name website -d -p 8080:80 website:layest 
 
+ $ docker build -t user-service-api .
+ $ docker run --name user-api -d -p 3000:80 user-service
+
+ TAGGING OVERRIDE :
+-----------------------------------
+ $ docker images   --> some have no repository some has no tag ---- <none>   <none> this is because of overriding
+
+ $ docker build -t evilscode-website:latest .
+ $ docker tag evilscode-website:latest evilscode-website:1
+
+ $ docker images
+ change something in your code and again create a new image and again tag with new version
+ 
+ $ docker build -t evilscode-website:latest .
+ $ docker tag evilscode-website:latest evilscode-website:2
+ 
+ Now you have 3 images 
+ 1. latest
+ 2. copy of latest i.e 2 with the new changes
+ 3 old version of code with tag as 1
+
+ DOCKER REGISTRIES :
+------------------------------------
+ -> Highly Scalable server side application that stores and lets you distribute Docker images.
+ -> Used in your CD/CI Pipeline  (Continuous delivery/ Continuous integration)
+ -> Run your application
+
+ Two typesof registry:
+ 1. Private   2.Public
+ 
+ DockerHub
+ quay.io
+ Amazon ECR
+
+ Go to dockerhub -> Repositories (you get only 1 private repo) -> create new public repo (similar to github)
+
+ PUSHING IMAGES TO DOCKERHUB:
+------------------------------------
+ reponame : webiste
+ docker push <username>/<reponame>:<tagname>
+  
+ $ docker tag website:latest evilriser/website:latest
+ $ docker tag evilscode-website:1 evilriser/website:1
+
+ $ docker login
+  username:
+  pwd: 
+ 
+ $ docker push evilriser/website:latest
+ $ docker push eviliser/website:1
+
+ PULLING IMAGES:
+----------------------------------
+ $ docker rmi <image_name>:tag  --> deletes images
+
+ $ docker rmi evilriser/website:latest
+ $ docker rmi evilriser/webiste:1
+ 
+ $ docker pull evilriser/webiste:latest
+
+ DOCKER INSPECT:
+----------------------------------
+ $ docker inspect <container_id>
+
+ DOCKER LOGS:
+---------------------------------
+ $ docker logs <container_id>
+ $ docker logs -f <container_id>  --> -f means follow keeps on adding logs
+
+ DOCKER EXEC:
+--------------------------------
+ $ dcoker exec -it <container_name> /bin/bash
+
+
+ 

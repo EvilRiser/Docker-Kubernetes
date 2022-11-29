@@ -148,5 +148,113 @@ Search bootstrap landing page theme and use any template and copy from github co
  -> Build own images
  -> It consist of steps on how to create images
  -> When containing your own image you don't need to mount the volume instead you have to copy everything into your image
+ -> should contain everything all the dependencies, all the source code
 
+ Create a "Dockerfile" in your root folder
+ -> always start from "FROM" --> always create some image not from scratch
+        --> FROM nginx:latest
+        --> ADD . /usr/share/nginx/html --> it will copy your code from your current directory to the static folder location in docker container
  
+ -> $ docker build --tag website:latest .  --> -t ot --tag and tag_name and location of your dockerfile
+ -> $ docker image ls
+
+ ############################################################
+
+Install Node
+create new folder --> UserService
+ $ cd UserService 
+ $ node --version
+ $ npm init
+   :yes
+ $ ll
+ $ npm install --save express
+ 
+ Copy from installation guide of express js
+ create index.js and paste it there
+
+ $ node index.js --> to run
+
+ ---------------------
+ FROM node:latest
+ WORKDIR /app  --> create new dir /app if does not exist inside container
+ ADD . . --> copy every thing from our curr dir to app dir
+ RUN npm install --> install all dependencies from our package.json
+ CMD node index.js  
+
+ $ docker build -t user-service:latest .   ---> tag should always be in lower case
+ $ docker run --name user-api -d -p 3000:3000 user-service:latest
+----------------------
+
+
+ .dockerignore :
+-----------------------------------
+
+when we do $ npm install or $ npm i 
+ one dir called node_modules is being created this we don't need to move to our docker container
+
+create .dockerignore
+
+ node_modules
+ Dockerfile
+ .git
+
+
+ CACHING and LAYERS :
+-----------------------------------
+
+ $ npm i -S react webpack gulp grunt   --> i=install, -S = --save
+
+ If the contents of the file which are not changing again and again you can use cache memory and it will not add it again and again and just copy the new changes
+ so it will help in reducing the build time
+
+ FROM node:latest
+ WORKDIR /app
+ ADD package*.json ./   ---> here you are copying the essential lib because these do not get changed again and again it will help to build fast with docker caching
+                            so it will not copy it again it will just load from its cache memory
+                            we are using ./   because when adding multiple files it shold be stored in folder so ./ means in docker dir 
+ RUN npm install
+ ADD . .
+ CMD node index.js
+______________________________________________________________________________________
+
+ADD & COPY --> add and copy are almost same just add has some more features, it can directly copy from url and can unzip tar files
+RUN & CMD --> whatever you run it will remain in build state and if give cmd it will be the last command before build completes
+            if multiple CMD then it will ignore all CMD except the last and CMD works when docker runs the image
+______________________________________________________________________________________
+
+ PULLING ALPINE IMAGES:
+-----------------------------------
+
+As all images which we are creating is of very huge size and we want to minimize size of our images, we are going to use Alpine linux distro
+Alpine is small size, secure
+
+ $ docker pull node:lts-alpine
+ $ docker image ls   or docker images
+
+ $ docker pull nginx:alpine
+
+ change in Dockerfile 
+ node:latest --> node:alpine
+
+ $ docker image rm <image-id> --> to remove image
+
+
+
+ TAGS, VERSIONING and TAGGING:
+-----------------------------------
+ -> Allows you to control image version
+ -> Avoids breaking changes
+ -> Safe
+
+ If your frameworks version change and you keep it as latest then it will fail, so always mention version along with tag
+ FROM nginx:1.17.2-alpine
+ ADD . /usr/share/nginx/html
+
+ FROM node:10.16.1-alpine  --> here version is of node 10.16.1 and alpine distribution
+
+ RUNNING CONTAINERS and TAGS:
+-----------------------------------
+ $ docker build -t website:latest .
+ 
+ $ docker build -t user-service-api .
+

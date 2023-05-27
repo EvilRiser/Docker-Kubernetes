@@ -41,16 +41,16 @@ Physical server or worker machine
 -> Each pod gets its own IP address (networking layer) can communicate between other pods using these IP address  
 -> New IP address on re-creation (due to server or node malfunctions or the application inside the pod gets crashed)  
 
-##### Services and Ingress:
-![alt text][Comp_service]
+##### Services and Ingress:  
+![alt text][Comp_service]  
 -> permanent IP address  
 -> lifecycle of pod and service NOT connected so if a pod dies or recreates in this case we can still use service and the IP address  
  
 You would also want your service to be accesible to the browser so you want an External service
 and you would not want your database to be open service and for that you would create known as internal service.
-![alt text][service_external]
+![alt text][service_external]  
 As from the image you can see the url is not very practical one, you would want the ip address of your node ip address and the port number but not a good way, you would want some https(secured) and your own domain name and for that kubernetes has component called **Ingress** 
-![alt text][Comp_ingress]
+![alt text][Comp_ingress]  
 
 
 

@@ -64,4 +64,4 @@ As from the image you can see the url is not very practical one, you would want 
 [Comp_pod]: ./images/Pod.png "Pod"
 [Comp_service]: ./images/service.png "Service"
 [Comp_ingress]: ./images/service3.png "Ingress"
-[service_external]: (./images/service2.png | width=50%) "Internal External"
+[service_external]: ./images/service2.png  "Internal External"

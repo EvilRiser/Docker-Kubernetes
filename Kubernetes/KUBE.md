@@ -146,8 +146,15 @@ It has intelligent forwardinglogic which makes sure the request comes in permorm
 How to:  
         -> schedule pod?  
         -> monitor?  
-        -> re-schedule/re-start pod?  
+        -> re-schedule/re-start pod?   
+        -> Join a new Node?
 
+All these managing processes are done by master node.
+
+So, Master Service or master node has totally different processes. 4 processes run on each master node.  
+* Api Server - creates one client to interact either a k8s ui or some command line tool kubelet or a k8s api  
+-> This is like a cluster gateway gets inital request like update request or a query.  
+-> acts as a gatekeeper for authentication
 
 
 
